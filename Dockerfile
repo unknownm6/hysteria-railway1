@@ -1,9 +1,13 @@
-FROM golang:1.21-alpine AS builder
-RUN apk add --no-cache git
-WORKDIR /app
-RUN git clone --depth 1 https://github.com/apernet/hysteria.git .
-WORKDIR /app/app/server
-RUN go build -o hysteria-server .
-FROM alpine
-COPY --from=builder /app/app/server/hysteria-server /usr/local/bin/hysteria-server
+FROM alpine:latest
+
+# دانلود آخرین نسخه باینری Hysteria 2
+RUN apk add --no-cache curl && \
+    ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') && \
+    curl -L https://github.com/apernet/hysteria/releases/download/app%2Fv2.6.1/hysteria-linux-$ARCH -o /usr/local/bin/hysteria-server && \
+    chmod +x /usr/local/bin/hysteria-server
+
+# پورت پیش‌فرض
+EXPOSE 443/tcp 443/udp
+
+# فرمان اجرا با نمایش راهنما (بعداً کانفیگ می‌کنیم)
 CMD ["hysteria-server", "--help"]
