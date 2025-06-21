@@ -1,0 +1,7 @@
+listen: ":443"
+protocol: "udp"
+auth:
+  - "username:password"
+obfs:
+  type: "salamander"
+  password: "your_password"
